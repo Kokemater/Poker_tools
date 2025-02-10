@@ -17,7 +17,7 @@ INPUT_SIZE = 2*17 + 5*17 + 1 + 1 + 1
 HIDDEN_SIZE_1 = 8
 HIDDEN_SIZE_2 = 8
 OUTPUT_SIZE = 3
-POPULATION_SIZE = 10 
+POPULATION_SIZE = 9 
 GENERATIONS = 100 
 
 def main():
@@ -26,7 +26,7 @@ def main():
 
 	# Entrenamiento por generaciones
 	for gen in range(GENERATIONS):
-		scores = simulate_game(population)
+		scores = simulate_game(population, INPUT_SIZE)
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_models = [model for _, model in models_with_scores[:POPULATION_SIZE // 2]]

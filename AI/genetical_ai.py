@@ -1,5 +1,5 @@
 import torch
-
+import torch.nn.functional as F
 
 # Red Neuronal (función de activación y forward)
 def sigmoid(x):
@@ -21,8 +21,8 @@ def forward(individual, x):
     x = torch.matmul(x, individual["W2"]) + individual["b2"]
     x = sigmoid(x)
     x = torch.matmul(x, individual["W3"]) + individual["b3"]
-    return x
-
+    action = torch.argmax(F.softmax(x, dim=0))  # Devuelve el índice de la máxima probabilidad
+    return action.item()
 
 # Algoritmo Genético
 def crossover(parent1, parent2):

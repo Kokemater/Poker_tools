@@ -22,10 +22,10 @@ def winner(a, b):
     return 1  # Esto está solo como ejemplo
 
 deck  = [
-    "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s", "js", "qs", "ks", "as",
-    "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "10d", "jd", "qd", "kd", "ac",
-    "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "jh", "qh", "kh", "ah",
-    "2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "10c", "jc", "qc", "kc", "ac",
+    "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "ts", "js", "qs", "ks", "as",
+    "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "td", "jd", "qd", "kd", "ac",
+    "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "th", "jh", "qh", "kh", "ah",
+    "2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "tc", "jc", "qc", "kc", "ac",
 ]
 
 def give_player_cards():
@@ -37,41 +37,70 @@ def give_player_cards():
 	return player_cards
 
 
-def simulate_game(poblation):
+def simulate_game(poblation, input_size):
 	small_blind = 5
 	big_blind = 10
 	n_games = 100
-	chips = torch.ones(1, len(poblation))*1000
-	playing_hand = torch.ones(1, len(poblation))
-	x = torch.zeros(1, len(poblation))
+	chips = torch.ones(len(poblation)) * 1000
+	total_players = len(poblation)
+
 	for round in range(n_games):
 		stack = 0
-		to_call = torch.zeros(1, len(poblation))
-		sb_position = round % 9
+		playing_hand = torch.ones(total_players)
+		payed = torch.zeros(len(poblation))
+		sb_position = round % total_players
 		utg_position = suma_mod9(sb_position, 2)
 		players = create_list_starting_from(utg_position)
-		chips[players[0]] -= small_blind
-		stack += small_blind
-		chips[players[1]] -= big_blind
-		stack += big_blind
-		for i in range(9):
-			if not playing_hand[players[i]]:
-				continue
-			player_cards = give_player_cards()
-			x[0, 0:6] = one_hot_card(player_cards[0]) # First player card
-			x[0, 7:13] = one_hot_card(player_cards[1]) # Second player card
-			x[0, -1] = 9 - i
-			x[0, -2] = stack
-			x[0, -3] = to_call
-			action = forward(poblation[i], x)
-			if action == 0: # fold
-				playing_hand[1, i] = 0
-			if action == 1: # Check/ Call
-				chips[i] -= to_call 
-			if action >= 2: # Raise (100% pot)
-				to_call = stack
-				player_cards -= stack
-
-
+		current_deck = deck[:]
+		player_cards = [give_player_cards() for _ in range(total_players)]
 		
+		# Pequeña ciega
+		chips[players[-2]] -= small_blind
+		payed[players[-2]] += small_blind
+		stack += small_blind
+		
+		# Ciega grande
+		chips[players[-1]] -= big_blind
+		payed[players[-1]] += big_blind
+		stack += big_blind
+		
+		while playing(payed, playing_hand):
+			for i in range(total_players):
+				if not playing_hand[players[i]]:
+					continue
+				n_players_playing = torch.count_nonzero(playing_hand == 1).item()
+				to_call = max(payed.max().item() - payed[players[i]].item(), 0)
+				x = torch.zeros(input_size, dtype=torch.float32)
+				x[0:17] = one_hot_card(player_cards[i][0])
+				x[17:34] = one_hot_card(player_cards[i][1])
+				x[-3] = float(stack)
+				x[-2] = float(to_call)
+				x[-1] = int(n_players_playing)
+				print("----")
+				print(payed)
+				print(playing_hand)
+				print(chips)
+				action = forward(poblation[players[i]], x)
+				if action == 2 and chips[players[i]] == 0:
+					action = 1
+				if action == 0:  # Fold
+					playing_hand[players[i]] = 0
+					payed[players[i]] = 0
+				elif action == 1:  # Check/Call
+					if chips[players[i]] >= to_call:
+						chips[players[i]] -= to_call
+						payed[players[i]] = payed.max()
+						stack += to_call
+					else:
+						payed[players[i]] = chips[players[i]]
+						chips[players[i]] = 0
+				elif action >= 2:  # Raise (100% del bote)
+					raise_value = min(stack, chips[players[i]])
+					chips[players[i]] -= raise_value
+					payed[players[i]] += raise_value
+					stack += raise_value
+		print("---------------PREFLOP TERMINADO----------------")
+		print(payed, stack, playing_hand)
+
+
 
