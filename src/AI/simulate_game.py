@@ -2,6 +2,7 @@ from genetical_ai import *
 import numpy as np
 from random import choice
 from tools import *
+from tabulate import tabulate
 
 INPUT_SIZE = 2*17 + 5*17 + 1 + 1 + 1
 
@@ -75,13 +76,12 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 	elif action == 1:  # Check/Call
 		if (to_call == 0):
 			print(f" Player {player} checks")
-		if chips[player] >= to_call:
-			chips[player] -= to_call
-			payed[player] = payed.max()
-			stack += to_call
-			if chips[player] == 0:
-				print(f" Player {player} calls {to_call} chips (All in)")
-				all_in[player] = 1
+		chips[player] -= to_call
+		payed[player] = payed.max()
+		stack += to_call
+		if chips[player] == 0:
+			print(f" Player {player} calls {to_call} chips (All in)")
+			all_in[player] = 1
 		else:
 			print(f" Player {player} calls {to_call} chips")
 	elif action >= 2:  # Raise (100% del bote)
@@ -93,6 +93,7 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 			all_in[player] = 1
 		else:
 			print(f" Player {player} raises {to_raise} chips")
+	return stack
 		
 
 def simulate_game(poblation):
@@ -134,13 +135,18 @@ def simulate_game(poblation):
 				to_raise = min(stack, chips[players[i]])
 
 				x = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
-				take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation, all_in)
+				stack = take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation, all_in)
 				print("----")
-				print(payed)
-				print(playing_hand)
-				print(chips)
+				data = [
+					["Payout"] + list(payed),
+					["Hand"] + list(playing_hand),
+					["Chips"] + list(chips)
+				]
+
+				print(tabulate(data, tablefmt="grid"))
+
 		print("---------------PREFLOP TERMINADO----------------")
-		print(payed, stack, playing_hand)
+		print(tabulate(data, tablefmt="grid"))
 
 		# Sale el flop
 
