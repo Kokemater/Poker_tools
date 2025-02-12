@@ -176,7 +176,11 @@ def evaluate_cards(cards):
 
 
 def get_winner(table, player1, player2):
-    if evaluate_cards(table + player1) > evaluate_cards(table + player2):
+    p1e = evaluate_cards(table + player1)
+    p2e = evaluate_cards(table + player2)
+    if p1e == p2e:
+        return -1
+    if p1e > p2e:
         return 0
     return 1
 
