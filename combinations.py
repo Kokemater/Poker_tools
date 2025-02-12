@@ -113,23 +113,23 @@ def is_full_house(threes, pairs):
 # player = ["4s", "3s"]
 # table = ["kd", "3d", "4s", "5h", "4c"]
 # player1 = ["4s", "3s"]
-# player2 = ["6s", "2s"]
+# player2 = ["4s", "4s"]
 
 BOT_HIGH = 0
 TOP_HIGH = BOT_HIGH + 14 * 5
-BOT_PAIRS = TOP_HIGH + 1
+BOT_PAIRS = (TOP_HIGH + 1) * 2
 TOP_PAIRS = BOT_PAIRS + 14 * 3
-BOT_THREES = TOP_PAIRS + 1
+BOT_THREES = (TOP_PAIRS + 1) * 2
 TOP_THREES = BOT_THREES + 14 * 2
-BOT_STRAIGHT = TOP_THREES + 1
+BOT_STRAIGHT = (TOP_THREES + 1) * 2
 TOP_STRAIGHT = BOT_STRAIGHT + 14
-BOT_FLUSH = TOP_STRAIGHT + 1
+BOT_FLUSH = (TOP_STRAIGHT + 1) * 2
 TOP_FLUSH = BOT_FLUSH + 1
-BOT_FULL = TOP_FLUSH + 1
+BOT_FULL = (TOP_FLUSH + 1) * 2
 TOP_FULL = BOT_FULL + 1
-BOT_POKER = TOP_FULL + 1
+BOT_POKER = (TOP_FULL + 1) * 2
 TOP_POKER = BOT_POKER + 1
-BOT_STRAIGHT_FLUSH = TOP_POKER + 1
+BOT_STRAIGHT_FLUSH = (TOP_POKER + 1) * 2
 TOP_STRAIGHT_FLUSH = BOT_STRAIGHT_FLUSH + 1
 
 
@@ -179,4 +179,4 @@ def get_winner(table, player1, player2):
     return 1
 
 
-# print(winner(table, player1, player2))
+# print(get_winner(table, player1, player2))
