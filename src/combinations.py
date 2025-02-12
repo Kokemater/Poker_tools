@@ -1,4 +1,6 @@
 def card_value(card):
+    if card[0] == 't':
+        return 10
     if card[0] == 'j':
         return 11
     if card[0] == 'q':
