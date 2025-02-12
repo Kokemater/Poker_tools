@@ -26,7 +26,7 @@ def main():
 
 	# Entrenamiento por generaciones
 	for gen in range(GENERATIONS):
-		scores = simulate_game(population, INPUT_SIZE)
+		scores = simulate_game(population)
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_models = [model for _, model in models_with_scores[:POPULATION_SIZE // 2]]
