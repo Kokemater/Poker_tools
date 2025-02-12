@@ -16,7 +16,7 @@ body {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 50%;
+    width: 100%;
 }
 
 /* Menú de fases */
@@ -51,8 +51,8 @@ body {
 .player {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 60%;
+    /* justify-content: space-between;*/ 
+    width: 40%;
     margin: 10px 0;
     gap: 15px;
 }
@@ -64,6 +64,7 @@ body {
 }
 
 .player input {
+	flex: 1;
     padding: 8px;
     font-size: 18px;
     width: 120px;
@@ -123,4 +124,12 @@ body {
     border-radius: 5px;
     font-size: 18px;
     margin-top: 10px;
+}
+
+.player-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    gap: 15px;
 }

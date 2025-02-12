@@ -6,10 +6,12 @@ function addPlayer() {
     const playerDiv = document.createElement("div");
     playerDiv.classList.add("player");
     playerDiv.innerHTML = `
-        <span>Jugador ${playerCount}</span>
-        <input type="text" placeholder="Ej: Qh Jd">
-        <span class="equity">Equity: --%</span>
-        <button class="remove-btn" onclick="removePlayer(this)">X</button>
+        <div class="player-wrapper">
+			<span>Jugador ${playerCount}</span>
+			<input type="text" placeholder="Ej: Qh Jd">
+			<span class="equity">Equity: --%</span>
+		</div>
+		<button class="remove-btn" onclick="removePlayer(this)">:(</button>
     `;
 
     document.getElementById("players").appendChild(playerDiv);
