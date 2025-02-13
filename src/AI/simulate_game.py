@@ -65,7 +65,7 @@ def input_data(player_cards, table_cards, stack, to_call, n_players_playing):
     x[121] = float(n_players_playing)
     return x
 
-def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_raise, poblation, all_in):
+def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_raise, poblation):
 	action = forward(poblation[player], x)
 	if action == 2 and chips[player] == 0:
 		action = 1
@@ -77,24 +77,57 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 		if (to_call == 0):
 			print(f" Player {player} checks")
 		chips[player] -= to_call
-		payed[player] = payed.max()
+		payed[player] += to_call
 		stack += to_call
 		if chips[player] == 0:
 			print(f" Player {player} calls {to_call} chips (All in)")
-			all_in[player] = 1
 		else:
 			print(f" Player {player} calls {to_call} chips")
 	elif action >= 2:  # Raise (100% del bote)
-		chips[player] -= to_raise
 		payed[player] += to_raise
+		chips[player] -= to_raise
 		stack += to_raise
 		if chips[player] == 0:
 			print(f" Player {player} raises {to_raise} chips (all in)")
-			all_in[player] = 1
 		else:
 			print(f" Player {player} raises {to_raise} chips")
 	return stack
 		
+def	blinds(players, chips, payed, stack, small_blind, big_blind):
+	# Pequeña ciega
+	chips[players[-2]] -= small_blind
+	payed[players[-2]] += small_blind
+	stack += small_blind
+
+	# Ciega grande
+	chips[players[-1]] -= big_blind
+	payed[players[-1]] += big_blind
+	stack += big_blind
+	return stack
+
+def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation):
+	while playing(payed, playing_hand):
+		for i in range(total_players):
+			if not playing(payed, playing_hand):
+				break
+			if not playing_hand[players[i]]:
+				continue
+			n_players_playing = torch.count_nonzero(playing_hand == 1).item()
+			to_call = min(payed.max().item() - payed[players[i]].item(), chips[players[i]])
+			to_raise = stack
+			if stack > chips[players[i]]:
+				to_raise = chips[players[i]].item()
+
+			x = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
+			stack = take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation)
+			data = [
+				["Payout"] + list(payed),
+				["Hand"] + list(playing_hand),
+				["Chips"] + list(chips)
+			]
+	print("---------------PREFLOP TERMINADO----------------")
+	print(tabulate(data, tablefmt="grid"))
+	return stack
 
 def simulate_game(poblation):
 	small_blind = 5
@@ -107,46 +140,14 @@ def simulate_game(poblation):
 		stack = 0
 		playing_hand = torch.ones(total_players)
 		payed = torch.zeros(len(poblation))
-		all_in = torch.zeros(len(poblation)) 
 		sb_position = round % total_players
 		utg_position = suma_mod9(sb_position, 2)
 		players = create_list_starting_from(utg_position)
 		current_deck = deck[:]
 		player_cards = [give_player_cards() for _ in range(total_players)]
-		
-		# Pequeña ciega
-		chips[players[-2]] -= small_blind
-		payed[players[-2]] += small_blind
-		stack += small_blind
-		
-		# Ciega grande
-		chips[players[-1]] -= big_blind
-		payed[players[-1]] += big_blind
-		stack += big_blind
-		
-		while playing(payed, playing_hand):
-			for i in range(total_players):
-				if not playing(payed, playing_hand):
-					break
-				if not playing_hand[players[i]]:
-					continue
-				n_players_playing = torch.count_nonzero(playing_hand == 1).item()
-				to_call = min(payed.max().item() - payed[players[i]].item(), chips[players[i]])
-				to_raise = min(stack, chips[players[i]])
-
-				x = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
-				stack = take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation, all_in)
-				print("----")
-				data = [
-					["Payout"] + list(payed),
-					["Hand"] + list(playing_hand),
-					["Chips"] + list(chips)
-				]
-
-				print(tabulate(data, tablefmt="grid"))
-
-		print("---------------PREFLOP TERMINADO----------------")
-		print(tabulate(data, tablefmt="grid"))
+		stack = blinds(players, chips, payed, stack, small_blind, big_blind)
+		stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation)
+		return
 
 		# Sale el flop
 
