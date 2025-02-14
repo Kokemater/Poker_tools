@@ -50,9 +50,28 @@ function changePhase(phase) {
 
 // Función para calcular equity
 function calculate() {
-    document.querySelectorAll(".equity").forEach(equity => {
-        equity.innerText = "Equity: 50%";
+    const players = [];
+    document.querySelectorAll(".player input").forEach(input => {
+        players.push(input.value.trim());
     });
+
+    const data = { players };
+
+    fetch("http://127.0.0.1:8000/api/calculate/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        const equities = result.equities;
+        document.querySelectorAll(".equity").forEach((equity, index) => {
+            equity.innerText = `Equity: ${equities[`Jugador ${index+1}`]}%`;
+        });
+    })
+    .catch(error => console.error("Error:", error));
 }
 
 
