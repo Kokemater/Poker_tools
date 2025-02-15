@@ -6,6 +6,12 @@ def create_list_starting_from(n):
 def suma_mod9(a, b):
     return (a + b) % 9
 
+def all_negative(list):
+	for i in list:
+		if i > 0:
+			return False
+	return True
+
 def playing(payed, players_playing, chips, n_actions):
 	n_players = len(payed)
 	active_payed = payed[players_playing == 1]

@@ -167,22 +167,45 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 	print(tabulate(data, tablefmt="grid"))
 	return stack
 
-def give_stack_to_winner(stack, total_players,chips, playing_hand, player_cards, table_cards, deck):
+def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, player_cards, table_cards, deck):
 	hands_playing = []
+	payed_playing = []
+
 	n_hands_playing = 0
 	map_index: dict[int, int] = {}
 
 	for i in range(total_players):
 		if playing_hand[i] == 1:
-			hands_playing.append(player_cards[i])
+			hands_playing.append(player_cards[i]) 
+			payed_playing.append(payed[i])
 			map_index[n_hands_playing] = i
 			n_hands_playing += 1
-	winners = get_winner(table_cards, hands_playing)
-	print(winners)
-	n_winners = len(winners)
-	for i in range(n_winners):
-		print(map_index[winners[i]])
-		chips[map_index[winners[i]]] += stack/n_winners
+
+	subpots = {}
+	while not all(x <= 0 for x in payed_playing):  
+		n_players_in_stack = sum(x > 0 for x in payed_playing)
+		min_stack = min([x for x in payed_playing if x > 0])
+		total_pot = n_players_in_stack * min_stack
+		subpots[total_pot] = []
+		for i in range(n_hands_playing):
+			if payed_playing[i] > 0:
+				subpots[total_pot].append(i)
+		print(subpots)
+		payed_playing = [x - min_stack if x > 0 else x for x in payed_playing]
+	for subpot in (subpots):
+		indices = subpots[subpot]
+		hands = [hands_playing[i] for i in indices]
+		winners = get_winner(table_cards, hands)
+		print("------")
+		print("subpot: ")
+		print(subpot)
+		print("indices")
+		print(indices)
+		print("winners")
+		n_winners = len(winners)
+		for i in range(n_winners):
+			print(subpots[subpot][winners[i]])
+			chips[map_index[subpots[subpot][winners[i]]]] += subpot / n_winners
 """ 		data = [
 		["Hand"] + list(playing_hand),
 		["Chips"] + list(chips)
@@ -207,7 +230,7 @@ def results_after_hand(game_round, poblation, chips, small_blind, big_blind):
 	stack = extract_cards([0, 1, 2], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
 	stack = extract_cards([3], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
 	stack = extract_cards([4], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
-	give_stack_to_winner(stack, total_players,chips, playing_hand, player_cards, table_cards, curr_deck)
+	give_stack_to_winner(stack, payed, total_players,chips, playing_hand, player_cards, table_cards, curr_deck)
 	return chips
 
 def reload_chips(chips, scores, big_blind):
@@ -228,8 +251,3 @@ def simulate_game(poblation):
 		reload_chips(chips, scores, big_blind)
 	scores = scores + chips
 	return scores
-
-
-
-
-
