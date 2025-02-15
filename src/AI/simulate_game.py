@@ -75,13 +75,19 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 	elif action == 1:  # Check/Call
 		if (to_call == 0):
 			print(f" Player {player} checks : {player_cards[player]}")
-		chips[player] -= to_call
-		payed[player] += to_call
-		stack += to_call
-		if chips[player] == 0:
-			print(f" Player {player} calls {to_call} chips (All in) : {player_cards[player]}")
 		else:
-			print(f" Player {player} calls {to_call} chips : {player_cards[player]}")
+			print("!!!!!!!!!!1")
+			print(to_call)
+			chips[player] -= to_call
+			payed[player] += to_call
+			print(to_call)
+			print("!!!!!!!!!!1")
+
+			stack += to_call
+			if chips[player] == 0:
+				print(f" Player {player} calls {to_call} chips (All in) : {player_cards[player]}")
+			else:
+				print(f" Player {player} calls {to_call} chips : {player_cards[player]}")
 	elif action >= 2:  # Raise (100% del bote)
 		payed[player] += to_raise
 		chips[player] -= to_raise
@@ -119,7 +125,9 @@ def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, player
 				n_actions += 1
 				continue
 			n_players_playing = torch.count_nonzero(playing_hand == 1).item()
-			to_call = min(payed.max().item() - payed[players[i]].item(), chips[players[i]])
+			to_call = payed.max().item() - payed[players[i]].item()
+			if to_call > chips[players[i]]:
+				to_call = chips[players[i]].item()
 			to_raise = stack
 			if stack > chips[players[i]]:
 				to_raise = chips[players[i]].item()
@@ -206,12 +214,6 @@ def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, playe
 		for i in range(n_winners):
 			print(subpots[subpot][winners[i]])
 			chips[map_index[subpots[subpot][winners[i]]]] += subpot / n_winners
-""" 		data = [
-		["Hand"] + list(playing_hand),
-		["Chips"] + list(chips)
-	]
-	print("---------------RONDA TERMINADA----------------")
-	print(tabulate(data, tablefmt="grid")) """
 
 def results_after_hand(game_round, poblation, chips, small_blind, big_blind):
 	table_cards = ["00", "00", "00", "00", "00"]
@@ -242,7 +244,7 @@ def reload_chips(chips, scores, big_blind):
 def simulate_game(poblation):
 	small_blind = 5
 	big_blind = 10
-	n_games = 10
+	n_games = 100
 	chips = torch.ones(len(poblation)) * (100 * big_blind)
 	scores = torch.zeros(len(poblation))
 	for round in range(n_games):

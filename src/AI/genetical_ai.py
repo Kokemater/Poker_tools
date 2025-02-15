@@ -45,5 +45,5 @@ def crossover(parent1, parent2):
 def mutate(individual):
     for key in individual:
         if torch.rand(1).item() < 0.8:  # Tasa de mutación
-            individual[key] += torch.randn_like(individual[key]) * 0.2  # Perturba los pesos
+            individual[key] += torch.randn_like(individual[key]) * 2  # Perturba los pesos
     return individual

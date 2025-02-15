@@ -25,7 +25,6 @@ def main():
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_scores = [scores for scores, model in models_with_scores[:POPULATION_SIZE // 2]]
-
 		best_models = [model for _, model in models_with_scores[:POPULATION_SIZE // 2]]
 		best_model = models_with_scores[0][1]
 		print(best_scores)
