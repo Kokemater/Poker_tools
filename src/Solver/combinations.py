@@ -23,33 +23,6 @@ def color_key(card):
         return 4
 
 
-def get_equal(cards, amount):
-    cards = [card_value(c) for c in cards]
-    pairs = []
-    counts = {}
-    for v in cards:
-        if v in counts:
-            counts[v] += 1
-        else:
-            counts[v] = 1
-    for v, c in counts.items():
-        n = c // amount
-        # for i in range(n):
-        if n > 0:
-            pairs.append(v)
-    return pairs
-
-
-def _is_straight_r(cards):
-    cards = sorted([card_value(c) for c in cards], reverse=True)
-    last = cards[0]
-    for i in range(1, len(cards)):
-        if cards[i] != last - 1:
-            return False
-        last = cards[i]
-    return True
-
-
 def _is_straight(cards):
     last = cards[0]
     for i in range(1, len(cards)):
@@ -65,124 +38,161 @@ def get_straight(cards):
         return False
     for i in range(len(cards) - 5 + 1):
         if _is_straight(cards[i:i+5]):
-            return cards[i:i+5]
+            return cards[i]
     return False
-
-
-def _is_color(cards):
-    col = cards[0][1]
-    for c in cards:
-        if c[1] != col:
-            return False
-    return col
 
 
 def get_colors(cards):
     cards = sorted(cards, key=lambda c: color_key(c))
-    colors = []
-    for i in range(len(cards) - 5):
-        col = _is_color(cards[i:i+5])
-        if col is not False:
-            colors.append(cards[i:i+5])
-    return colors
+    colors = [
+        sorted([c for c in cards if c[1] == 's'],
+               key=lambda c: card_value(c), reverse=True),
+        sorted([c for c in cards if c[1] == 'h'],
+               key=lambda c: card_value(c), reverse=True),
+        sorted([c for c in cards if c[1] == 'd'],
+               key=lambda c: card_value(c), reverse=True),
+        sorted([c for c in cards if c[1] == 'c'],
+               key=lambda c: card_value(c), reverse=True),
+    ]
+    ret = [c for c in colors if len(c) >= 5]
+    return ret[0] if len(ret) > 0 else False
 
 
-def has_color(cards):
-    cards = sorted(cards, key=lambda c: color_key(c))
-    for i in range(len(cards) - 5):
-        col = _is_color(cards[i:i+5])
-        if col is not False:
-            return col
-    return False
+def get_best_color(colors):
+    return [card_value(c) for c in colors[:5]]
+
+
+EVAL_HIGH = 1
+EVAL_PAIRS = 2
+EVAL_DPAIRS = 3
+EVAL_SET = 4
+EVAL_STRAIGHT = 5
+EVAL_FLUSH = 6
+EVAL_FULL = 7
+EVAL_POKER = 8
+EVAL_STRAIGHT_FLUSH = 9
+
+
+def get_poker(cards):
+    cards = sorted(cards, key=lambda c: card_value(c), reverse=True)
+    poker = get_first_repeated(cards, 4)
+    if poker is False:
+        return False
+    cards = [card_value(c) for c in cards if card_value(c) != poker]
+    return [poker, cards[0]]
 
 
 def get_highs(cards):
     return sorted([card_value(c) for c in cards], reverse=True)[:5]
 
 
-def get_high_card(table, player):
-    return max([card_value(c) for c in player])
+def get_first_repeated(cards, repeat_count):
+    count = 0
+    last = cards[0]
+    rep = 0
+    for c in cards:
+        if card_value(c) == card_value(last):
+            count += 1
+        else:
+            count = 1
+        if count == repeat_count:
+            rep = card_value(c)
+            break
+        last = c
+    if rep == 0:
+        return False
+    return rep
 
 
-def is_full_house(threes, pairs):
-    for p in pairs:
-        if threes[0] != p:
-            return [threes[0], p]
-    return False
+def get_pair(cards):
+    cards = sorted(cards, key=lambda c: card_value(c), reverse=True)
+    pair = get_first_repeated(cards, 2)
+    if pair is False:
+        return False
+    cards = [card_value(c) for c in cards if card_value(c) != pair]
+    return [pair] + cards[:3]
 
 
-# table = ["5s", "6s", "7s", "5h", "4c"]
-# player = ["4s", "3s"]
-# table = ["kd", "3d", "4s", "5h", "4c"]
-# player1 = ["4s", "3s"]
-# player2 = ["4s", "4s"]
-
-BOT_HIGH = 0
-TOP_HIGH = BOT_HIGH + 14 * 5
-BOT_PAIRS = (TOP_HIGH + 1) * 2
-TOP_PAIRS = BOT_PAIRS + 14 * 3
-BOT_THREES = (TOP_PAIRS + 1) * 2
-TOP_THREES = BOT_THREES + 14 * 2
-BOT_STRAIGHT = (TOP_THREES + 1) * 2
-TOP_STRAIGHT = BOT_STRAIGHT + 14
-BOT_FLUSH = (TOP_STRAIGHT + 1) * 2
-TOP_FLUSH = BOT_FLUSH + 1
-BOT_FULL = (TOP_FLUSH + 1) * 2
-TOP_FULL = BOT_FULL + 1
-BOT_POKER = (TOP_FULL + 1) * 2
-TOP_POKER = BOT_POKER + 1
-BOT_STRAIGHT_FLUSH = (TOP_POKER + 1) * 2
-TOP_STRAIGHT_FLUSH = BOT_STRAIGHT_FLUSH + 1
+def get_dpair(cards):
+    cards = sorted(cards, key=lambda c: card_value(c), reverse=True)
+    pair1 = get_first_repeated(cards, 2)
+    if pair1 is False:
+        return False
+    cards = [c for c in cards if card_value(c) != pair1]
+    pair2 = get_first_repeated(cards, 2)
+    if pair2 is False:
+        return False
+    cards = [c for c in cards if card_value(c) != pair2]
+    return [pair1, pair2, card_value(cards[0])]
 
 
-def evaluate_cards(cards):
-    pairs = get_equal(cards, 2)
-    threes = get_equal(cards, 3)
-    poker = get_equal(cards, 4)
-    high_cards = get_highs(cards)
-    straight = get_straight(cards)
+def get_set(cards):
+    cards = sorted(cards, key=lambda c: card_value(c), reverse=True)
+    st = get_first_repeated(cards, 3)
+    if st is False:
+        return False
+    cards = [card_value(c) for c in cards if card_value(c) != st]
+    return [st] + cards[:2]
+
+
+def get_full_house(cards):
+    cards = sorted(cards, key=lambda c: card_value(c), reverse=True)
+    st = get_first_repeated(cards, 3)
+    if st is False:
+        return False
+    cards = [c for c in cards if card_value(c) != st]
+    pair = get_first_repeated(cards, 2)
+    if pair is False:
+        return False
+    return [st, pair]
+
+
+def get_rating(cards):
     colors = get_colors(cards)
-    eval = 0
-
-    for c in colors:
-        if _is_straight_r(c):
-            eval += BOT_STRAIGHT_FLUSH
-            # print("flush straight")
-    if len(poker) > 0:
-        eval += BOT_POKER
-        # print(poker[0], "poker")
-    fh = is_full_house(pairs, threes)
-    if fh is not False:
-        eval += BOT_FULL
-        # print(fh, "full house")
-    if len(colors) > 0:
-        eval += BOT_FLUSH
-        # print(colors, "color")
+    if colors is not False:
+        straight = get_straight(colors)
+        if straight is not False:
+            return (EVAL_STRAIGHT_FLUSH, straight)
+    poker = get_poker(cards)
+    if poker is not False:
+        return tuple([EVAL_POKER] + poker)
+    full = get_full_house(cards)
+    if full is not False:
+        return tuple([EVAL_FULL] + full)
+    if colors is not False:
+        best_color = get_best_color(colors)
+        return tuple([EVAL_FLUSH] + best_color)
+    straight = get_straight(cards)
     if straight is not False:
-        # print(straight, "straight")
-        eval += BOT_STRAIGHT + straight[0]
-    if len(threes) > 0:
-        eval += BOT_THREES + sum(threes)
-        # print(threes, "threes")
-    if len(pairs) > 1:
-        eval += BOT_PAIRS + sum(pairs)
-        # print(pairs, "double pairs")
-    elif len(pairs) > 0:
-        eval += BOT_PAIRS + sum(pairs)
-        # print(pairs, "pair")
-    eval += BOT_HIGH + sum(high_cards)
-    # print(high_cards, "high cards")
-    return eval
+        return (EVAL_STRAIGHT, straight)
+    trio = get_set(cards)
+    if trio is not False:
+        return tuple([EVAL_SET] + trio)
+    dpair = get_dpair(cards)
+    if dpair is not False:
+        return tuple([EVAL_DPAIRS] + dpair)
+    pair = get_pair(cards)
+    if pair is not False:
+        return tuple([EVAL_PAIRS] + pair)
+    return tuple([EVAL_HIGH] + get_highs(cards))
 
 
-def get_winner(table, player1, player2):
-    p1e = evaluate_cards(table + player1)
-    p2e = evaluate_cards(table + player2)
-    if p1e == p2e:
-        return -1
-    if p1e > p2e:
-        return 0
-    return 1
+def get_numeric_rating(rating):
+    sum = 0
+    for i in range(len(rating)):
+        sum += rating[i] * 14 ** (5 - i)
+    return sum
 
 
-# print(get_winner(table, player1, player2))
+def get_winner(table, players):
+    ratings = [get_numeric_rating(get_rating(table + p)) for p in players]
+    m = max(ratings)
+    return [i for i, r in enumerate(ratings) if r == m]
+
+
+# table = ["3c", "th", "9h", "8h", "7h"]
+#
+# p1 = ["jh", "9c"]
+# p2 = ["3c", "3h"]
+#
+# print(get_winner(table, [p1, p2]))
