@@ -1,18 +1,26 @@
 import torch
 import torch.nn.functional as F
 
+INPUT_SIZE = 2*17 + 5*17 + 1 + 1 + 1
+HIDDEN_SIZE_1 = INPUT_SIZE*16
+HIDDEN_SIZE_2 = INPUT_SIZE*16
+OUTPUT_SIZE = 3
+POPULATION_SIZE = 9 
+GENERATIONS = 100
+
+
 # Red Neuronal (función de activación y forward)
 def sigmoid(x):
     return 1 / (1 + torch.exp(-x))
-def create_individual(input_size, hidden_size_1, hidden_size_2, output_size):
+def create_individual():
     """Crea una red neuronal con pesos inicializados aleatoriamente"""
     return {
-        "W1": torch.randn(input_size, hidden_size_1) * 0.1,
-        "b1": torch.randn(hidden_size_1) * 0.1,
-        "W2": torch.randn(hidden_size_1, hidden_size_2) * 0.1,
-        "b2": torch.randn(hidden_size_2) * 0.1,
-        "W3": torch.randn(hidden_size_2, output_size) * 0.1,
-        "b3": torch.randn(output_size) * 0.1
+        "W1": torch.randn(INPUT_SIZE, HIDDEN_SIZE_1) * 0.1,
+        "b1": torch.randn(HIDDEN_SIZE_1) * 0.1,
+        "W2": torch.randn(HIDDEN_SIZE_1, HIDDEN_SIZE_2) * 0.1,
+        "b2": torch.randn(HIDDEN_SIZE_2) * 0.1,
+        "W3": torch.randn(HIDDEN_SIZE_2, OUTPUT_SIZE) * 0.1,
+        "b3": torch.randn(OUTPUT_SIZE) * 0.1
     }
 
 def forward(individual, x):
@@ -36,6 +44,6 @@ def crossover(parent1, parent2):
 
 def mutate(individual):
     for key in individual:
-        if torch.rand(1).item() < 0.1:  # Tasa de mutación
-            individual[key] += torch.randn_like(individual[key]) * 0.01  # Perturba los pesos
+        if torch.rand(1).item() < 0.8:  # Tasa de mutación
+            individual[key] += torch.randn_like(individual[key]) * 0.2  # Perturba los pesos
     return individual
