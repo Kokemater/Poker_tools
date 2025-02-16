@@ -236,7 +236,7 @@ def reload_chips(chips, scores, big_blind):
 def simulate_game(poblation):
 	small_blind = 5
 	big_blind = 10
-	n_games = 100
+	n_games = 1000
 	scores = torch.zeros(len(poblation))
 	for round in range(n_games):
 		chips = torch.ones(len(poblation)) * (100 * big_blind)
