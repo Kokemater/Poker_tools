@@ -195,4 +195,4 @@ table = ["3c", "th", "9h", "8h", "7h"]
 p1 = ["jh", "9c"]
 p2 = ["3c", "3h"]
 
-print(get_winner(table, [p1, p2]))
+#print(get_winner(table, [p1, p2]))

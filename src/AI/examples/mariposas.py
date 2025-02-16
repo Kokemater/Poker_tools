@@ -94,7 +94,7 @@ def main():
 	for gen in range(GENERATIONS):
 		background_color = 0.5 * (1 + torch.sin(torch.tensor(gen * 0.006)))
 		scores = simulate_game(population, background_color)
-		#print(scores)
+		##print(scores)
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_scores = [scores for scores, model in models_with_scores[:POPULATION_SIZE // 2]]
@@ -123,9 +123,7 @@ def main():
 		show_scores(best_color, background_color, gen)
 
 		population = new_population
-		if gen %100 == 0:
-			print(f"Generación {gen+1} completada.")
-			print(scores)
+
 	pygame.quit()
 
 if __name__ == "__main__":

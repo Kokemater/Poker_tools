@@ -70,32 +70,21 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 	if action == 2 and chips[player] == 0:
 		action = 1
 	if action == 0:  # Fold
-		print(f" Player {player} fold : {player_cards[player]}")
+		#print(f" Player {player} fold : {player_cards[player]}")
 		playing_hand[player] = 0
 	elif action == 1:  # Check/Call
-		if (to_call == 0):
-			print(f" Player {player} checks : {player_cards[player]}")
-		else:
-			print("!!!!!!!!!!1")
-			print(to_call)
-			chips[player] -= to_call
-			payed[player] += to_call
-			print(to_call)
-			print("!!!!!!!!!!1")
+		#print("!!!!!!!!!!1")
+		#print(to_call)
+		chips[player] -= to_call
+		payed[player] += to_call
+		#print(to_call)
+		#print("!!!!!!!!!!1")
+		stack += to_call
 
-			stack += to_call
-			if chips[player] == 0:
-				print(f" Player {player} calls {to_call} chips (All in) : {player_cards[player]}")
-			else:
-				print(f" Player {player} calls {to_call} chips : {player_cards[player]}")
 	elif action >= 2:  # Raise (100% del bote)
 		payed[player] += to_raise
 		chips[player] -= to_raise
 		stack += to_raise
-		if chips[player] == 0:
-			print(f" Player {player} raises {to_raise} chips (all in) : {player_cards[player]}")
-		else:
-			print(f" Player {player} raises {to_raise} chips : {player_cards[player]}")
 	return stack
 		
 def	blinds(players, chips, payed, stack, small_blind, big_blind):
@@ -111,8 +100,8 @@ def	blinds(players, chips, payed, stack, small_blind, big_blind):
 	chips[players[-1]] -= big_blind
 	payed[players[-1]] += big_blind
 	stack += big_blind
-	print(chips)
-	print(payed)
+	#print(chips)
+	#print(payed)
 	return stack
 
 def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation):
@@ -139,8 +128,8 @@ def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, player
 		["Hand"] + list(playing_hand),
 		["Chips"] + list(chips)
 	]
-	print("---------------PREFLOP TERMINADO----------------")
-	print(tabulate(data, tablefmt="grid"))
+	#print("---------------PREFLOP TERMINADO----------------")
+	#print(tabulate(data, tablefmt="grid"))
 	return stack
 
 def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, deck):
@@ -148,7 +137,7 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 	for i in cards:
 		table_cards[i] = choice(deck)
 		deck.remove(table_cards[i])
-	print(table_cards)
+	#print(table_cards)
 	first_move = True
 	while first_move or playing(payed, playing_hand, chips, n_actions):
 		first_move = False
@@ -171,8 +160,8 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 		["Hand"] + list(playing_hand),
 		["Chips"] + list(chips)
 	]
-	print("---------------RONDA TERMINADA----------------")
-	print(tabulate(data, tablefmt="grid"))
+	#print("---------------RONDA TERMINADA----------------")
+	#print(tabulate(data, tablefmt="grid"))
 	return stack
 
 def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, player_cards, table_cards, deck):
@@ -190,29 +179,32 @@ def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, playe
 			n_hands_playing += 1
 
 	subpots = {}
+	previous_stack = sum(payed[playing_hand == 0])
 	while not all(x <= 0 for x in payed_playing):  
 		n_players_in_stack = sum(x > 0 for x in payed_playing)
 		min_stack = min([x for x in payed_playing if x > 0])
 		total_pot = n_players_in_stack * min_stack
+		if len(subpots) == 0:
+			total_pot += previous_stack
 		subpots[total_pot] = []
 		for i in range(n_hands_playing):
 			if payed_playing[i] > 0:
 				subpots[total_pot].append(i)
-		print(subpots)
+		#print(subpots)
 		payed_playing = [x - min_stack if x > 0 else x for x in payed_playing]
 	for subpot in (subpots):
 		indices = subpots[subpot]
 		hands = [hands_playing[i] for i in indices]
 		winners = get_winner(table_cards, hands)
-		print("------")
-		print("subpot: ")
-		print(subpot)
-		print("indices")
-		print(indices)
-		print("winners")
+		#print("------")
+		#print("subpot: ")
+		#print(subpot)
+		#print("indices")
+		#print(indices)
+		#print("winners")
 		n_winners = len(winners)
 		for i in range(n_winners):
-			print(subpots[subpot][winners[i]])
+			#print(subpots[subpot][winners[i]])
 			chips[map_index[subpots[subpot][winners[i]]]] += subpot / n_winners
 
 def results_after_hand(game_round, poblation, chips, small_blind, big_blind):
@@ -245,11 +237,10 @@ def simulate_game(poblation):
 	small_blind = 5
 	big_blind = 10
 	n_games = 100
-	chips = torch.ones(len(poblation)) * (100 * big_blind)
 	scores = torch.zeros(len(poblation))
 	for round in range(n_games):
+		chips = torch.ones(len(poblation)) * (100 * big_blind)
 		chips = results_after_hand(round, poblation, chips, small_blind, big_blind)
-		print(chips)
-		reload_chips(chips, scores, big_blind)
-	scores = scores + chips
+		scores += chips
+		scores -= (100 *big_blind)
 	return scores
