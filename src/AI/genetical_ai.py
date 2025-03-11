@@ -6,7 +6,7 @@ HIDDEN_SIZE_1 = INPUT_SIZE*16
 HIDDEN_SIZE_2 = INPUT_SIZE*16
 OUTPUT_SIZE = 3
 POPULATION_SIZE = 6
-GENERATIONS = 1000
+GENERATIONS = 30000
 
 TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -46,6 +46,6 @@ def crossover(parent1, parent2):
 
 def mutate(individual):
     for key in individual:
-        if torch.rand(1, device=TORCH_DEVICE).item() < 0.8:  # Tasa de mutación
-            individual[key] += torch.randn_like(individual[key], device=TORCH_DEVICE) * 2  # Perturba los pesos
+        if torch.rand(1, device=TORCH_DEVICE).item() < 0.1:  # Tasa de mutación
+            individual[key] += torch.randn_like(individual[key], device=TORCH_DEVICE) * 0.05  # Perturba los pesos
     return individual

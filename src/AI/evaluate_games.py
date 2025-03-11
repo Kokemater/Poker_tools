@@ -3,7 +3,7 @@ from simulate_game_tools import *
 def simulate_game(poblation):
 	small_blind = 5
 	big_blind = 10
-	n_games = 100
+	n_games = 1000
 	scores = torch.zeros(len(poblation), device=TORCH_DEVICE)
 	chips = torch.ones(len(poblation), device=TORCH_DEVICE) * (100 * big_blind)
 	round = 0
