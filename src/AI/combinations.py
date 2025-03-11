@@ -92,10 +92,12 @@ def get_highs(cards):
 
 def get_first_repeated(cards, repeat_count):
     count = 0
+    if len(cards) < repeat_count:
+        return False
     last = cards[0] if len(cards) > 0 else ""
     rep = 0
     for c in cards:
-        if card_value(c) == card_value(last):
+        if card_value(c) == card_value(last) and card_value(c) != 0:
             count += 1
         else:
             count = 1
