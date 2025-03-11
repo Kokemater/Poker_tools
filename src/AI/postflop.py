@@ -1,5 +1,5 @@
 
-from combinations import get_rating, get_numeric_rating
+from combinations import get_rating
 
 def filter_empty_cards(board):
 	return [card for card in board if card != "00"]
@@ -62,8 +62,8 @@ def get_hand_rating(cards):
 	rating = get_rating(cards)
 	return rating[0] + 0.05*rating[1]
 
-board = ["6s", "6s", "6s", "7h", "9h", "00", "00"]
-print(get_hand_rating(board))
+#board = ['8d', '8c', '00', '00', '00', '00', '00']
+#print(get_hand_rating(board))
 
 
 
@@ -172,6 +172,8 @@ def	is_top_pair_avaible(hand, board):
 	board = filter_empty_cards(board)  
 	my_cards_n = []
 	board_cards_n = []
+	if len(board_cards_n) == 0:
+		return False
 	for card in hand:
 		my_cards_n.append(card_value(card[0]))
 	for card in board:

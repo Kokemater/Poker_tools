@@ -23,7 +23,7 @@ def color_key(card):
         return 4
 
 
-def _is_straight(cards):
+def is_straight(cards):
     last = cards[0]
     for i in range(1, len(cards)):
         if cards[i] != last - 1:
@@ -37,7 +37,7 @@ def get_straight(cards):
     if len(cards) < 5:
         return False
     for i in range(len(cards) - 5 + 1):
-        if _is_straight(cards[i:i+5]):
+        if is_straight(cards[i:i+5]):
             return cards[i]
     return False
 

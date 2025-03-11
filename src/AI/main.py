@@ -21,13 +21,12 @@ def main():
 
 	for gen in range(GENERATIONS):
 		scores = simulate_game(population)
-		#print(scores)
+		print(scores)
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_scores = [scores for scores, model in models_with_scores[:POPULATION_SIZE // 2]]
 		best_models = [model for _, model in models_with_scores[:POPULATION_SIZE // 2]]
 		best_model = models_with_scores[0][1]
-		#print(best_scores)
 		new_population = [best_model]  # Mantener al mejor individuo (elitismo)
 		for i in range(0, len(best_models) - 1, 2):
 			parent1 = best_models[i]

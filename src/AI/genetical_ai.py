@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-INPUT_SIZE = 2*17 + 5*17 + 1 + 1 + 1
+INPUT_SIZE = 6
 HIDDEN_SIZE_1 = INPUT_SIZE*16
 HIDDEN_SIZE_2 = INPUT_SIZE*16
 OUTPUT_SIZE = 3
