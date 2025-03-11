@@ -153,8 +153,8 @@ def results_after_hand(game_info):
 	total_players = len(poblation)
 	curr_deck = DECK.copy()
 	stack = 0
-	playing_hand = torch.ones(total_players)
-	payed = torch.zeros(total_players)
+	playing_hand = torch.ones(total_players, device=TORCH_DEVICE)
+	payed = torch.zeros(total_players, device=TORCH_DEVICE)
 	sb_position = game_round % total_players
 	utg_position = suma_mod(total_players, sb_position, 2)
 	players = create_list_starting_from(utg_position, total_players)

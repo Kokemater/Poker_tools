@@ -1,6 +1,6 @@
 from postflop import hand_equity, calculate_pot_odds, get_hand_rating
 from preflop import is_good_hand_preflop
-from genetical_ai import forward, INPUT_SIZE
+from genetical_ai import forward, INPUT_SIZE, TORCH_DEVICE
 import torch
 
 def find_action(pot_size, call_size, player_cards, board_cards, n_players_playing, player):
@@ -12,7 +12,7 @@ def find_action(pot_size, call_size, player_cards, board_cards, n_players_playin
 	#table_rating = 0
 	n_players = n_players_playing
 
-	x = torch.zeros(INPUT_SIZE, dtype=torch.float32)
+	x = torch.zeros(INPUT_SIZE, dtype=torch.float32, device=TORCH_DEVICE)
 	x[0] = pot_odds
 	x[1] = equity
 	x[2] = preflop_value
