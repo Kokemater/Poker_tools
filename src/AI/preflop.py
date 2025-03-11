@@ -43,8 +43,8 @@ def is_good_hand_preflop(card1, card2):
     return bad
 
 # Ejemplo de uso
-print(is_good_hand_preflop("as", "ks"))  # 2 (Nuts)
-print(is_good_hand_preflop("9h", "th"))  # 1 (Middle)
-print(is_good_hand_preflop("4c", "4d"))  # 1 (Middle)
-print(is_good_hand_preflop("jc", "qc"))  # 1.5 (Good)
-print(is_good_hand_preflop("2d", "7h"))  # 0 (Bad)
+#print(is_good_hand_preflop("as", "ks"))  # 2 (Nuts)
+#print(is_good_hand_preflop("9h", "th"))  # 1 (Middle)
+#print(is_good_hand_preflop("4c", "4d"))  # 1 (Middle)
+#print(is_good_hand_preflop("jc", "qc"))  # 1.5 (Good)
+#print(is_good_hand_preflop("2d", "7h"))  # 0 (Bad)

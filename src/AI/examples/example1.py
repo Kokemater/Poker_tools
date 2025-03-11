@@ -77,7 +77,7 @@ for generation in range(GENERATIONS):
     # Mostrar la mejor precisión cada 100 generaciones
     if generation % 100 == 0:
         best_fitness = evaluate(population[0])
-        #print(f"Generación {generation}, Mejor Fitness: {best_fitness:.4f}")
+        ##print(f"Generación {generation}, Mejor Fitness: {best_fitness:.4f}")
 
 # Evaluar el mejor modelo final
 best_individual = population[0]
@@ -86,5 +86,5 @@ hidden = sigmoid(X @ W1 + b1)
 final_output = sigmoid(hidden @ W2 + b2)
 final_output = final_output.round()  # Redondeamos las salidas a 0 o 1
 
-#print("\nResultados finales:")
-#print(final_output)
+##print("\nResultados finales:")
+##print(final_output)

@@ -1,27 +1,18 @@
 
 from genetical_ai import *
-from simulate_game import *
+from evaluate_games import *
 import numpy as np
 import random
 
-# Input : 
-# Player_card1, Player_card2
-# Board_card1, Board_card2, Board_card3, Board_card4, Board_card5
-# Call_size
-# Pot_size
-# N_players_behind
-
-# Output :
-# Fold - Check/Fold - Raise
 
 def main():
-	#best_model = torch.load("best_model.pth")
+	best_model = torch.load("best_model.pth")
 	population = [create_individual() for _ in range(POPULATION_SIZE - 1)]
-	#population.append(best_model)
+	population.append(best_model)
 
 	for gen in range(GENERATIONS):
 		scores = simulate_game(population)
-		print(scores)
+		#print(scores)
 		models_with_scores = list(zip(scores, population))
 		models_with_scores.sort(reverse=True, key=lambda x: x[0])
 		best_scores = [scores for scores, model in models_with_scores[:POPULATION_SIZE // 2]]
@@ -42,10 +33,10 @@ def main():
 			new_population.append(child)
 		population = new_population
 
-		if gen %2 == 0:
+		if gen %250 == 0:
 			torch.save(best_model, "best_model.pth")
-			print(f"Generación {gen+1} completada.")
-			print(f"Suma de dinero total = {sum(scores)}")
+			#print(f"Generación {gen+1} completada.")
+			#print(f"Suma de dinero total = {sum(scores)}")
 
 if __name__ == "__main__":
 	main()

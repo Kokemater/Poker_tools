@@ -1,7 +1,6 @@
-from simulate_game import input_data
 from genetical_ai import forward
 import torch
-
+from inputs import find_action
 """
 DECK  = [
     "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "ts", "js", "qs", "ks", "as",
@@ -16,9 +15,8 @@ def main():
 	table_cards = input("Table cards: ").split() # as th 9h 00 00
 	stack = int(input("stack: "))
 	to_call = int(input("Chips to call: ")) # 0 if no chips to call
-	n_players_playing = input("n_players_playing: ")
-	x = input_data(player_cards, table_cards, stack, to_call, n_players_playing)
-	action = forward(best_model, x)
+	n_players_playing = int(input("n_players_playing: "))
+	action = find_action(stack, to_call, player_cards, table_cards, n_players_playing, best_model)
 
 	if action == 0:  # Fold
 		print(f"AI says FOLD")

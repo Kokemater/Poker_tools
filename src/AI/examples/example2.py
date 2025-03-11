@@ -56,7 +56,7 @@ def genetic_algorithm(num_generations=20, population_size=10):
     population = create_population(population_size)
 
     for generation in range(num_generations):
-        #print(f"\n🧬 Generación {generation + 1}")
+        ##print(f"\n🧬 Generación {generation + 1}")
 
         # Seleccionar los mejores jugadores
         best_players = select_best(population)
@@ -73,7 +73,7 @@ def genetic_algorithm(num_generations=20, population_size=10):
 
         # Mostrar el mejor puntaje
         best_score = max(evaluate(net) for net in best_players)
-        #print(f"🔹 Mejor puntuación: {best_score}/10")
+        ##print(f"🔹 Mejor puntuación: {best_score}/10")
 
 # Ejecutar la evolución
 genetic_algorithm()

@@ -1,12 +1,12 @@
 import torch
 import torch.nn.functional as F
 
-INPUT_SIZE = 6
+INPUT_SIZE = 7
 HIDDEN_SIZE_1 = INPUT_SIZE*16
 HIDDEN_SIZE_2 = INPUT_SIZE*16
 OUTPUT_SIZE = 3
 POPULATION_SIZE = 6
-GENERATIONS = 100
+GENERATIONS = 1000
 
 
 # Red Neuronal (función de activación y forward)

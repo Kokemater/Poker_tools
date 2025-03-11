@@ -127,7 +127,7 @@ def get_dpair(cards):
     if pair2 is False:
         return False
     cards = [c for c in cards if card_value(c) != pair2]
-    return [pair1, pair2, card_value(cards[0])]
+    return [pair1, pair2, card_value(cards[0]) if len(cards) != 0 else 0]
 
 
 def get_set(cards):
@@ -152,6 +152,7 @@ def get_full_house(cards):
 
 
 def get_rating(cards):
+    #print(cards)
     colors = get_colors(cards)
     if colors is not False:
         straight = get_straight(colors)
@@ -194,11 +195,6 @@ def get_winner(table, players):
     return [i for i, r in enumerate(ratings) if r == m]
 
 
-table = ["3c", "th", "9h", "8h", "7h"]
 
-p1 = ["jh", "9c"]
-p2 = ["3c", "3h"]
-
-print(get_rating(p1))
-print(get_rating(p2))
-#print(get_winner(table, [p1, p2]))
+cards = ['2s', '3s', '4s', '5s', '6s']
+#print(get_rating(cards))

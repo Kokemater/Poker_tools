@@ -26,7 +26,6 @@ def classify_board(board):
 		if board_values[i] + 2 == board_values[i + 1]:  # Hay un gap de una carta
 			is_semi_connected = True
 			break
-
 	# Detectar si existen cartas altas y cuántas
 	high_cards = len([card for card in board_values if card >= 10])
 
@@ -35,10 +34,8 @@ def classify_board(board):
 	# Evaluar el tipo de tablero
 	if is_flush_possible:
 		return 0  # Tablero con posibilidad de color
-	
 	if is_connected:
 		return 0  # Tablero con posibilidad de escalera
-	
 	if is_semi_connected:
 		return 1  # Tablero semi-conectado
 
@@ -59,14 +56,10 @@ def classify_board(board):
 
 def get_hand_rating(cards):
 	cards = filter_empty_cards(cards)
+	if not cards:
+		return 0
 	rating = get_rating(cards)
 	return rating[0] + 0.05*rating[1]
-
-#board = ['8d', '8c', '00', '00', '00', '00', '00']
-#print(get_hand_rating(board))
-
-
-
 
 
 
@@ -83,8 +76,6 @@ def card_value(card):
 # Helper function to get the suit of a card
 def card_suit(card):
 	return card[1].lower()
-
-# Helper function to filter out empty cards ('00') from the board
 
 
 # Helper function to count suits in hand and board
@@ -188,22 +179,22 @@ def hand_equity(hand, board):
 	board = filter_empty_cards(board)
 
 	if is_top_pair_avaible(hand, board):
-		outs += 4
-		print("Top pair avaible")
+		outs += 3
+		##print("Top pair avaible")
 	if is_flush_project(hand, board):
-		print("flush project")
+		##print("flush project")
 		outs += 9
 	elif is_backdoor_flush(hand, board):
-		print("backdoor flush")
+		##print("backdoor flush")
 		outs += 2 
 	if is_straight_project_2_puntas(hand, board):
-		print("straight project 2 ends")
+		##print("straight project 2 ends")
 		outs += 8 
 	elif is_straight_project(hand, board):
-		print("straight project 1 end")
+		##print("straight project 1 end")
 		outs += 4 
 	elif is_backdoor_straight(hand, board):
-		print("backdoor straight")
+		##print("backdoor straight")
 		outs += 1
 
 	# Calculate the number of unseen cards
@@ -217,26 +208,6 @@ def hand_equity(hand, board):
 	else:
 		equity = 0
 	return equity
-
-# Sample deck of cards (this should be initialized with the full deck)
-DECK = [
-	"2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "ts", "js", "qs", "ks", "as",
-	"2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "td", "jd", "qd", "kd", "ac",
-	"2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "th", "jh", "qh", "kh", "ah",
-	"2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "tc", "jc", "qc", "kc", "ac",
-]
-
-# Example of how to use the functions:
-
-# Sample hand and board (with empty cards '00')
-hand = ["8s", "as"]
-board = ["6s", "qd", "4h", "00", "00"]  # Two empty cards on the board
-
-# Calculate hand equity
-print(f"Board = {board}")
-print(f"Hand = {hand}")
-equity = hand_equity(hand, board)
-print(f"Hand Equity: {equity:.2f}")
 
 
 def calculate_pot_odds(pot_size, call_size):

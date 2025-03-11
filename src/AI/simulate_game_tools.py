@@ -51,8 +51,8 @@ def	blinds(players, chips, payed, stack, small_blind, big_blind):
 	chips[players[-1]] -= big_blind
 	payed[players[-1]] += big_blind
 	stack += big_blind
-	#print(chips)
-	#print(payed)
+	##print(chips)
+	##print(payed)
 	return stack
 
 def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation):
@@ -137,7 +137,7 @@ def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, playe
 		for i in range(n_hands_playing):
 			if payed_playing[i] > 0:
 				subpots[total_pot].append(i)
-		#print(subpots)
+		##print(subpots)
 		payed_playing = [x - min_stack if x > 0 else x for x in payed_playing]
 	for subpot in (subpots):
 		indices = subpots[subpot]
