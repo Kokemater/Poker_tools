@@ -8,8 +8,7 @@ OUTPUT_SIZE = 3
 POPULATION_SIZE = 6
 GENERATIONS = 1000
 
-# TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-TORCH_DEVICE = "cpu"
+TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # Red Neuronal (función de activación y forward)
