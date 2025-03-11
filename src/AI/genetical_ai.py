@@ -8,6 +8,9 @@ OUTPUT_SIZE = 3
 POPULATION_SIZE = 6
 GENERATIONS = 1000
 
+# TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+TORCH_DEVICE = "cpu"
+
 
 # Red Neuronal (función de activación y forward)
 def sigmoid(x):
@@ -15,12 +18,12 @@ def sigmoid(x):
 def create_individual():
     """Crea una red neuronal con pesos inicializados aleatoriamente"""
     return {
-        "W1": torch.randn(INPUT_SIZE, HIDDEN_SIZE_1) * 0.1,
-        "b1": torch.randn(HIDDEN_SIZE_1) * 0.1,
-        "W2": torch.randn(HIDDEN_SIZE_1, HIDDEN_SIZE_2) * 0.1,
-        "b2": torch.randn(HIDDEN_SIZE_2) * 0.1,
-        "W3": torch.randn(HIDDEN_SIZE_2, OUTPUT_SIZE) * 0.1,
-        "b3": torch.randn(OUTPUT_SIZE) * 0.1
+        "W1": torch.randn(INPUT_SIZE, HIDDEN_SIZE_1, device=TORCH_DEVICE) * 0.1,
+        "b1": torch.randn(HIDDEN_SIZE_1, device=TORCH_DEVICE) * 0.1,
+        "W2": torch.randn(HIDDEN_SIZE_1, HIDDEN_SIZE_2, device=TORCH_DEVICE) * 0.1,
+        "b2": torch.randn(HIDDEN_SIZE_2, device=TORCH_DEVICE) * 0.1,
+        "W3": torch.randn(HIDDEN_SIZE_2, OUTPUT_SIZE, device=TORCH_DEVICE) * 0.1,
+        "b3": torch.randn(OUTPUT_SIZE, device=TORCH_DEVICE) * 0.1
     }
 
 def forward(individual, x):
@@ -36,7 +39,7 @@ def forward(individual, x):
 def crossover(parent1, parent2):
     child = create_individual()  # Crear un nuevo niño
     for key in child:
-        if torch.rand(1).item() > 0.5:
+        if torch.rand(1, device=TORCH_DEVICE).item() > 0.5:
             child[key] = parent1[key]
         else:
             child[key] = parent2[key]
@@ -44,6 +47,6 @@ def crossover(parent1, parent2):
 
 def mutate(individual):
     for key in individual:
-        if torch.rand(1).item() < 0.8:  # Tasa de mutación
-            individual[key] += torch.randn_like(individual[key]) * 2  # Perturba los pesos
+        if torch.rand(1, device=TORCH_DEVICE).item() < 0.8:  # Tasa de mutación
+            individual[key] += torch.randn_like(individual[key], device=TORCH_DEVICE) * 2  # Perturba los pesos
     return individual

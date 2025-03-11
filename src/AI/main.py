@@ -6,7 +6,7 @@ import random
 
 
 def main():
-	best_model = torch.load("best_model.pth")
+	best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
 	population = [create_individual() for _ in range(POPULATION_SIZE - 1)]
 	population.append(best_model)
 
@@ -33,9 +33,10 @@ def main():
 			new_population.append(child)
 		population = new_population
 
-		if gen %250 == 0:
+		if gen % 2 == 0:
+			print(f"Generación {gen+1} completada.")
+		if gen % 50 == 0:
 			torch.save(best_model, "best_model.pth")
-			#print(f"Generación {gen+1} completada.")
 			#print(f"Suma de dinero total = {sum(scores)}")
 
 if __name__ == "__main__":

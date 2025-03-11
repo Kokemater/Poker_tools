@@ -1,4 +1,4 @@
-from genetical_ai import forward
+from genetical_ai import forward, TORCH_DEVICE
 import torch
 from inputs import find_action
 """
@@ -10,7 +10,7 @@ DECK  = [
 ]
 """
 def main():
-	best_model = torch.load("best_model.pth")
+	best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
 	player_cards = input("Player cards: ").split() # 2s 3s
 	table_cards = input("Table cards: ").split() # as th 9h 00 00
 	stack = int(input("stack: "))
