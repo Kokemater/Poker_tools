@@ -1,4 +1,6 @@
 def card_value(card):
+    if len(card) == 0:
+        return 0
     if card[0] == 't':
         return 10
     if card[0] == 'j':
@@ -13,6 +15,8 @@ def card_value(card):
 
 
 def color_key(card):
+    if len(card) == 0:
+        return 0
     if card[1] == 's':
         return 1
     if card[1] == 'd':
@@ -26,7 +30,7 @@ def color_key(card):
 def is_straight(cards):
     last = cards[0]
     for i in range(1, len(cards)):
-        if cards[i] != last - 1:
+        if cards[i] != last - 1 or cards[i] == 0:
             return False
         last = cards[i]
     return True
@@ -88,7 +92,7 @@ def get_highs(cards):
 
 def get_first_repeated(cards, repeat_count):
     count = 0
-    last = cards[0]
+    last = cards[0] if len(cards) > 0 else ""
     rep = 0
     for c in cards:
         if card_value(c) == card_value(last):
@@ -195,4 +199,6 @@ table = ["3c", "th", "9h", "8h", "7h"]
 p1 = ["jh", "9c"]
 p2 = ["3c", "3h"]
 
+print(get_rating(p1))
+print(get_rating(p2))
 #print(get_winner(table, [p1, p2]))
