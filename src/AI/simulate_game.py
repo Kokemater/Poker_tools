@@ -5,9 +5,6 @@ from tools import *
 from tabulate import tabulate
 from combinations import get_winner
 
-
-def input_data():
-    x = torch.zeros(1, 9)
 	
 def one_hot_card(card):
 	if card[0] == "0":
@@ -22,9 +19,9 @@ def one_hot_card(card):
 	palo_vec[map_suit[suit]] = 1
 	return torch.cat([valor_vec, palo_vec])  # Concatenar en un solo vector
 
-def winner(a, b):
-    # Aquí deberías implementar una lógica para determinar al ganador
-    return 1  # Esto está solo como ejemplo
+
+
+
 
 DECK  = [
     "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "ts", "js", "qs", "ks", "as",
@@ -73,12 +70,8 @@ def take_decission(x, player, chips, stack, payed, playing_hand, to_call, to_rai
 		#print(f" Player {player} fold : {player_cards[player]}")
 		playing_hand[player] = 0
 	elif action == 1:  # Check/Call
-		#print("!!!!!!!!!!1")
-		#print(to_call)
 		chips[player] -= to_call
 		payed[player] += to_call
-		#print(to_call)
-		#print("!!!!!!!!!!1")
 		stack += to_call
 
 	elif action >= 2:  # Raise (100% del bote)
@@ -123,13 +116,6 @@ def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, player
 			x = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
 			stack = take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation, player_cards)
 			n_actions += 1
-	data = [
-		["Payout"] + list(payed),
-		["Hand"] + list(playing_hand),
-		["Chips"] + list(chips)
-	]
-	#print("---------------PREFLOP TERMINADO----------------")
-	#print(tabulate(data, tablefmt="grid"))
 	return stack
 
 def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, deck):
@@ -137,7 +123,6 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 	for i in cards:
 		table_cards[i] = choice(deck)
 		deck.remove(table_cards[i])
-	#print(table_cards)
 	first_move = True
 	while first_move or playing(payed, playing_hand, chips, n_actions):
 		first_move = False
@@ -160,8 +145,6 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 		["Hand"] + list(playing_hand),
 		["Chips"] + list(chips)
 	]
-	#print("---------------RONDA TERMINADA----------------")
-	#print(tabulate(data, tablefmt="grid"))
 	return stack
 
 def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, player_cards, table_cards, deck):
@@ -196,18 +179,12 @@ def give_stack_to_winner(stack, payed, total_players, chips, playing_hand, playe
 		indices = subpots[subpot]
 		hands = [hands_playing[i] for i in indices]
 		winners = get_winner(table_cards, hands)
-		#print("------")
-		#print("subpot: ")
-		#print(subpot)
-		#print("indices")
-		#print(indices)
-		#print("winners")
 		n_winners = len(winners)
 		for i in range(n_winners):
-			#print(subpots[subpot][winners[i]])
 			chips[map_index[subpots[subpot][winners[i]]]] += subpot / n_winners
 
-def results_after_hand(game_round, poblation, chips, small_blind, big_blind):
+def results_after_hand(game_info):
+	game_round, poblation, chips, small_blind, big_blind = game_info
 	table_cards = ["00", "00", "00", "00", "00"]
 	total_players = len(poblation)
 	curr_deck = DECK.copy()
@@ -215,12 +192,12 @@ def results_after_hand(game_round, poblation, chips, small_blind, big_blind):
 	playing_hand = torch.ones(total_players)
 	payed = torch.zeros(total_players)
 	sb_position = game_round % total_players
-	utg_position = suma_mod9(sb_position, 2)
-	players = create_list_starting_from(utg_position)
+	utg_position = suma_mod(total_players, sb_position, 2)
+	players = create_list_starting_from(utg_position, total_players)
 	player_cards = [give_player_cards(curr_deck) for _ in range(total_players)]
 	stack = blinds(players, chips, payed, stack, small_blind, big_blind)
 	stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation)
-	players = create_list_starting_from(sb_position)
+	players = create_list_starting_from(sb_position, total_players)
 	stack = extract_cards([0, 1, 2], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
 	stack = extract_cards([3], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
 	stack = extract_cards([4], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
@@ -238,9 +215,13 @@ def simulate_game(poblation):
 	big_blind = 10
 	n_games = 1000
 	scores = torch.zeros(len(poblation))
-	for round in range(n_games):
-		chips = torch.ones(len(poblation)) * (100 * big_blind)
-		chips = results_after_hand(round, poblation, chips, small_blind, big_blind)
-		scores += chips
+	chips = torch.ones(len(poblation)) * (100 * big_blind)
+	round = 0
+	game_info = [round, poblation, chips, small_blind, big_blind]
+	for game_info[0] in range(n_games):
+		game_info[2] = torch.ones(len(poblation)) * (100 * big_blind)
+		game_info[2] = results_after_hand(game_info)
+		print(game_info[2])
+		scores += game_info[2]
 		scores -= (100 *big_blind)
 	return scores

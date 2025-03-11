@@ -1,10 +1,10 @@
 import torch
 
-def create_list_starting_from(n):
-	return list(range(n, 9)) + list(range(0, n))
+def create_list_starting_from(n, n_players):
+	return list(range(n, n_players)) + list(range(0, n))
 
-def suma_mod9(a, b):
-    return (a + b) % 9
+def suma_mod(mod ,a, b):
+    return (a + b) % mod
 
 def all_negative(list):
 	for i in list:

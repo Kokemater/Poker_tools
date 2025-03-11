@@ -15,9 +15,9 @@ import random
 # Fold - Check/Fold - Raise
 
 def main():
-	best_model = torch.load("best_model.pth")
+	#best_model = torch.load("best_model.pth")
 	population = [create_individual() for _ in range(POPULATION_SIZE - 1)]
-	population.append(best_model)
+	#population.append(best_model)
 
 	for gen in range(GENERATIONS):
 		scores = simulate_game(population)
