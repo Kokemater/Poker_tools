@@ -7,13 +7,6 @@ from combinations import get_winner
 from inputs import find_action
 
 
-DECK  = [
-    "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "ts", "js", "qs", "ks", "as",
-    "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "td", "jd", "qd", "kd", "ac",
-    "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "th", "jh", "qh", "kh", "ah",
-    "2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "tc", "jc", "qc", "kc", "ac",
-]
-
 def give_player_cards(deck):
 	player_cards = []
 	for _ in range(2):
@@ -55,7 +48,7 @@ def	blinds(players, chips, payed, stack, small_blind, big_blind):
 	##print(payed)
 	return stack
 
-def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation):
+def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation,history):
 	n_actions = 0
 	while playing(payed, playing_hand, chips, n_actions):
 		for i in range(total_players):
@@ -71,14 +64,15 @@ def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, player
 			to_raise = stack
 			if stack > chips[players[i]]:
 				to_raise = chips[players[i]].item()
-			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]])
+			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]], history)
+			history.append([0, players[i], action])
 			#action = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
 			stack = apply_action(action, players[i], chips, stack, payed, playing_hand, to_call, to_raise)
 
 			n_actions += 1
 	return stack
 
-def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, deck):
+def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, deck, history):
 	n_actions = 0
 	for i in cards:
 		table_cards[i] = choice(deck)
@@ -99,7 +93,16 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 				to_raise = chips[players[i]].item()
 			#x = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
 			#stack = take_decission(x, players[i], chips, stack, payed, playing_hand, to_call, to_raise, poblation, player_cards)
-			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]])
+			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]], history)
+			if cards == [0, 1, 2]:
+				n = 1
+			elif cards == [3]:
+				n = 2
+			elif cards == [4]:
+				n = 3
+			else:
+				assert("error")
+			history.append([n, players[i], action])
 			#action = input_data(player_cards[players[i]], table_cards, stack, to_call, n_players_playing)
 			stack = apply_action(action, players[i], chips, stack, payed, playing_hand, to_call, to_raise)
 
@@ -160,11 +163,12 @@ def results_after_hand(game_info):
 	players = create_list_starting_from(utg_position, total_players)
 	player_cards = [give_player_cards(curr_deck) for _ in range(total_players)]
 	stack = blinds(players, chips, payed, stack, small_blind, big_blind)
-	stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation)
+	history = []
+	stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation,history)
 	players = create_list_starting_from(sb_position, total_players)
-	stack = extract_cards([0, 1, 2], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
-	stack = extract_cards([3], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
-	stack = extract_cards([4], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck)
+	stack = extract_cards([0, 1, 2], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)
+	stack = extract_cards([3], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)
+	stack = extract_cards([4], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)
 	give_stack_to_winner(stack, payed, total_players,chips, playing_hand, player_cards, table_cards, curr_deck)
 	return chips
 
