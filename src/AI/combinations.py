@@ -83,6 +83,8 @@ def get_poker(cards):
     if poker is False:
         return False
     cards = [card_value(c) for c in cards if card_value(c) != poker]
+    if len(cards) == 0:
+        return [poker]
     return [poker, cards[0]]
 
 
