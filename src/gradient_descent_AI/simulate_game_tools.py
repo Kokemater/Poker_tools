@@ -6,7 +6,6 @@ from tabulate import tabulate
 from combinations import get_winner
 from inputs import find_action
 
-
 def give_player_cards(deck):
 	player_cards = []
 	for _ in range(2):
@@ -64,7 +63,6 @@ def preflop(stack, payed, playing_hand, chips, player_cards, table_cards, player
 			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]], history)
 			history.append([0, players[i], action])
 			stack = apply_action(action, players[i], chips, stack, payed, playing_hand, to_call, to_raise)
-
 			n_actions += 1
 	return stack
 
@@ -88,7 +86,9 @@ def extract_cards(cards, stack, payed, playing_hand, chips, player_cards, table_
 			if stack > chips[players[i]]:
 				to_raise = chips[players[i]].item()
 			action = find_action(stack, to_call, player_cards[players[i]], table_cards, n_players_playing, poblation[players[i]], history)
-			if cards == [0, 1, 2]:
+			if cards == []:
+				n = 0
+			elif cards == [0, 1, 2]:
 				n = 1
 			elif cards == [3]:
 				n = 2
@@ -157,7 +157,8 @@ def results_after_hand(game_info):
 	player_cards = [give_player_cards(curr_deck) for _ in range(total_players)]
 	stack = blinds(players, chips, payed, stack, small_blind, big_blind)
 	history = []
-	stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation,history)
+	stack = extract_cards([], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)
+	#stack = preflop(stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation,history)
 	players = create_list_starting_from(sb_position, total_players)
 	stack = extract_cards([0, 1, 2], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)
 	stack = extract_cards([3], stack, payed, playing_hand, chips, player_cards, table_cards, players, total_players, poblation, curr_deck, history)

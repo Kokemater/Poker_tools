@@ -6,9 +6,9 @@ import random
 
 
 def main():
-	best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
-	population = [create_individual() for _ in range(POPULATION_SIZE - 1)]
-	population.append(best_model)
+	#best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
+	population = [create_individual() for _ in range(POPULATION_SIZE)]
+	#population.append(best_model)
 
 	for gen in range(GENERATIONS):
 		scores = simulate_game(population)
