@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Poker Solver{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+</head>
+
+<body>
+
+    <!-- 🚀 CABECERA FIJA -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'img/diamond.png' %}" alt="Poker Logo" width="40" height="40" class="me-2">
+                Poker Solver
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">Acerca de</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contacto</a></li>
+
+                    <!-- Dropdown Estrategias -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="estrategiasDropdown" role="button" data-bs-toggle="dropdown">
+                            Estrategias
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/preflop">Juego Preflop</a></li>
+                            <li><a class="dropdown-item" href="/postflop">Juego Postflop</a></li>
+                            <li><a class="dropdown-item" href="/bluffing">Faroleo y Psicología</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Dropdown Referencias -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="referenciasDropdown" role="button" data-bs-toggle="dropdown">
+                            Referencias
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="https://en.wikipedia.org/wiki/Poker" target="_blank">Historia del Póker</a></li>
+                            <li><a class="dropdown-item" href="https://www.wsop.com/" target="_blank">World Series of Poker</a></li>
+                            <li><a class="dropdown-item" href="https://www.pokernews.com/" target="_blank">Noticias de Póker</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 📌 CONTENIDO PRINCIPAL -->
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript personalizado -->
+    <script src="{% static 'js/poker.js' %}"></script>
+</body>
+</html>

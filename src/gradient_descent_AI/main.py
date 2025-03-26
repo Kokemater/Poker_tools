@@ -5,6 +5,7 @@ import numpy as np
 import random
 
 
+
 def main():
 	#best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
 	population = []
@@ -45,7 +46,3 @@ def main():
 
 		if gen % 2 == 0:
 			print(f"gen {gen} | IA won {scores[1]} chips. ")
-
-
-if __name__ == "__main__":
-	main()

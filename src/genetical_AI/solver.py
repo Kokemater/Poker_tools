@@ -23,6 +23,8 @@ def main():
 	map_hands = solver_map(table_cards, stack, to_call, n_players_playing, history)
 	print(map_hands)
 
+main()
+
 
 
 

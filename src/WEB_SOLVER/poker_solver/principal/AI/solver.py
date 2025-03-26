@@ -4,7 +4,6 @@ from inputs import find_action
 import itertools
 
 
-
 def solver_map(table_cards, stack, to_call, n_players_playing, history):
 	best_model = torch.load("best_model.pth", map_location=TORCH_DEVICE)
 	map_hands = {}
@@ -13,16 +12,8 @@ def solver_map(table_cards, stack, to_call, n_players_playing, history):
 		action = find_action(stack, to_call, list(player_cards), table_cards, n_players_playing, best_model, history)
 		map_hands[player_cards] = action
 	return(map_hands)
-"""
-def main():
-	table_cards = ["00", "00", "00", "00", "00"]
-	stack = 100
-	to_call = 10
-	n_players_playing = 2
-	history = []
-	map_hands = solver_map(table_cards, stack, to_call, n_players_playing, history)
-	print(map_hands)
 
 
-"""
+
+
 
