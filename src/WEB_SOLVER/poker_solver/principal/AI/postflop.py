@@ -1,5 +1,5 @@
 
-from combinations import get_rating
+from principal.AI.combinations import get_rating
 
 def filter_empty_cards(board):
 	return [card for card in board if card != "00"]

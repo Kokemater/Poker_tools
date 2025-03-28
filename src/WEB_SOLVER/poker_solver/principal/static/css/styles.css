@@ -1,149 +1,134 @@
 :root {
---white: #ffffff;
---gray-light: #e0e0e0;
---gray-dark: #c0c0c0;
---gold: #f1c40f;
---black: #374e5d;
+    --white: #ffffff;
+    --gray-light: #e0e0e0;
+    --gray-dark: #c0c0c0;
+    --gold: #f1c40f;
+    --black: #1e2d24;
+    --table-green: #0f5224;
 }
 
-/* Estilo de la cuadrícula */
+/* Fondo general con efecto tapete */
+body {
+    background: radial-gradient(circle, #106330 20%, #083d1b 80%);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* Contenedor principal con fondo unificado */
+.main-content {
+    background: transparent;
+    padding-top: 90px;
+}
+
+/* Cuadrícula de manos de póker */
 .poker-grid {
-display: grid;
-grid-template-columns: repeat(13, 1fr);
-gap: 6px;
-max-width: 750px;
-background: rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    max-width: 750px;
+    padding: 10px;
+    background: rgb(255, 255, 255);
+    border-radius: 12px;
+    border: 2px solid var(--gold);
 }
 
-/* 🎭 Estilos de cada mano */
+/* Estilo de cada mano */
 .hand {
-width: 55px;
-height: 55px;
-display: flex;
-align-items: center;
-justify-content: center;
-border: 2px solid white;
-cursor: pointer;
-font-weight: bold;
-border-radius: 10px;
-transition: all 0.3s ease-in-out;
-user-select: none;
-text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-font-size: 1.1rem;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--gold);
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    user-select: none;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    font-size: 1.1rem;
 }
 
-/* 💡 Diferenciar manos por colores */
+/* Diferenciar manos con colores */
 .hand.pair { background: var(--white); color: black; }
 .hand.suited { background: var(--gray-light); color: black; }
 .hand.offsuited { background: var(--gray-dark); color: black; }
 
-/* ℹ️ Barra de Detalles */
+/* Barra de detalles con transparencia */
 .details-container {
-position: fixed;
-right: 4%;
-top: 50%;
-transform: translateY(-50%);
-background: rgba(255, 255, 255, 0.15);
-padding: 1px;
-border-radius: 12px;
-backdrop-filter: blur(12px);
-box-shadow: 0 6px 15px rgba(255, 255, 255, 0.3);
-color: white;
-max-height: 80vh;
-overflow-y: auto;
-text-align: center; /* Centra el texto dentro del contenedor */
+    position: fixed;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(20, 20, 20, 0.85);
+    padding: 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 15px rgba(84, 125, 222, 0.3);
+    color: white;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: center;
+    border: 2px solid var(--gold);
 }
 
 .details-container h5 {
-color: var(--gold);
+    color: var(--gold);
 }
 
 /* Tabla de combinaciones */
-.table-container {
-text-align: center;
-}
-
 .table {
-background: var(--white);
-border-radius: 6px;
+    background: var(--white);
+    border-radius: 6px;
 }
 
 .table th {
-background: var(--black);
-color: rgb(32, 24, 24);
+    background: var(--gold);
+    color: black;
 }
 
+/* Manos seleccionadas */
 .selected {
-background: var(--gold) !important;
-color: black;
-transform: scale(1.3);
-box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.8);
-border: 2px solid white;
-animation: pulse 1s infinite alternate;
+    background: var(--gold) !important;
+    color: black;
+    transform: scale(1.3);
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.8);
+    border: 2px solid white;
+    animation: pulse 1s infinite alternate;
 }
 
 @keyframes pulse {
-0% { transform: scale(1.3); }
-100% { transform: scale(1.4); }
+    0% { transform: scale(1.3); }
+    100% { transform: scale(1.4); }
 }
 
-
-/* 🎰 CABECERA NAVBAR */
+/* Estilo del Navbar */
 .navbar {
-	background: rgba(0, 0, 0, 0.8);
-	backdrop-filter: blur(5px);
-	padding: 12px 0;
-	transition: all 0.3s ease-in-out;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    padding: 12px 0;
+    transition: all 0.3s ease-in-out;
+    border-bottom: 2px solid var(--gold);
 }
 
 .navbar-brand {
-	font-size: 1.5rem;
-	font-weight: bold;
-	color: var(--gold) !important;
-	text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--gold) !important;
+    text-transform: uppercase;
 }
 
 .navbar-nav .nav-link {
-	color: white !important;
-	font-weight: 600;
-	transition: all 0.3s ease-in-out;
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
 }
 
 .navbar-nav .nav-link:hover {
-	color: var(--gold) !important;
-	transform: scale(1.1);
+    color: var(--gold) !important;
+    transform: scale(1.1);
 }
 
-.dropdown-menu {
-	background: rgba(0, 0, 0, 0.9);
-	border: 1px solid var(--gold);
-}
-
-.dropdown-item {
-	color: var(--gold);
-}
-
-.dropdown-item:hover {
-	background: var(--gold);
-	color: black;
-}
-
-/* 📌 Espaciado para que el contenido no se solape */
-.main-content {
-	padding-top: 90px;
-}
-
-/* 🃏 FOOTER */
-footer {
-	background: rgba(0, 0, 0, 0.8);
-	color: var(--gray-light);
-	text-align: center;
-	padding: 12px;
-	font-size: 0.9rem;
-	border-top: 1px solid var(--gold);
-}
-
-/* 🎭 Sombra al hacer scroll */
+/* Sombra al hacer scroll */
 .navbar.fixed-top {
-	box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
 }

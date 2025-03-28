@@ -1,6 +1,6 @@
-from postflop import hand_equity, calculate_pot_odds, get_hand_rating
-from preflop import is_good_hand_preflop
-from genetical_ai import forward, INPUT_SIZE, TORCH_DEVICE
+from principal.AI.postflop import hand_equity, calculate_pot_odds, get_hand_rating
+from principal.AI.preflop import is_good_hand_preflop
+from principal.AI.genetical_ai import forward, INPUT_SIZE, TORCH_DEVICE
 import torch
 
 def find_action(pot_size, call_size, player_cards, board_cards, n_players_playing, player, history):

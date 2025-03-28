@@ -1,4 +1,4 @@
-from genetical_ai import DECK
+from principal.AI.genetical_ai import DECK
 
 def is_suited_connector(card1, card2):
     value1, suit1 = card1[0], card1[1]
